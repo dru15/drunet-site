@@ -1,103 +1,85 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Algo Codes</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #0d0d0d; }
-.wrap { padding: 1.5rem; font-family: var(--font-mono); }
-.btn {
-  display: flex; align-items: center; justify-content: space-between;
-  width: 100%; padding: 14px 18px; margin-bottom: 10px;
-  background: #161616; border: 0.5px solid #2a2a2a;
-  border-radius: 8px; cursor: pointer; color: #c9c9c9;
-  font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.03em;
-  transition: background 0.15s, border-color 0.15s;
-}
-.btn:hover { background: #1e1e1e; border-color: #3d3d3d; color: #e8e8e8; }
-.btn.copied { border-color: #1d9e75; color: #5DCAA5; }
-.tag { font-size: 11px; color: #555; letter-spacing: 0.08em; text-transform: uppercase; }
-.btn.copied .tag { color: #1d9e75; }
-.indicator { font-size: 11px; color: #555; min-width: 50px; text-align: right; }
-.btn.copied .indicator { color: #1d9e75; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d0d; font-family: monospace; padding: 2rem; }
+  h1 { color: #444; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.5rem; }
+  .btn {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; padding: 14px 18px; margin-bottom: 10px;
+    background: #161616; border: 0.5px solid #2a2a2a;
+    border-radius: 8px; cursor: pointer; color: #c9c9c9;
+    font-family: monospace; font-size: 13px; letter-spacing: 0.03em;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn:hover { background: #1e1e1e; border-color: #3d3d3d; color: #e8e8e8; }
+  .btn.copied { border-color: #1d9e75; color: #5DCAA5; }
+  .tag { font-size: 11px; color: #555; letter-spacing: 0.08em; text-transform: uppercase; }
+  .btn.copied .tag { color: #1d9e75; }
+  .status { font-size: 11px; color: #555; min-width: 70px; text-align: right; }
+  .btn.copied .status { color: #1d9e75; }
 </style>
-<div class="wrap">
-<button class="btn" onclick="copyCode(this, 'knapsack')">
-  <span>0/1 Knapsack</span>
-  <span class="tag">DP</span>
-  <span class="indicator" id="ind-knapsack">click to copy</span>
+</head>
+<body>
+<h1>Algorithm Codes</h1>
+
+<button class="btn" onclick="copy(this,'knapsack')">
+  <span>0/1 Knapsack</span><span class="tag">DP</span><span class="status">click to copy</span>
 </button>
-<button class="btn" onclick="copyCode(this, 'karatsuba')">
-  <span>Karatsuba Multiplication</span>
-  <span class="tag">Divide &amp; Conquer</span>
-  <span class="indicator" id="ind-karatsuba">click to copy</span>
+<button class="btn" onclick="copy(this,'karatsuba')">
+  <span>Karatsuba Multiplication</span><span class="tag">Divide &amp; Conquer</span><span class="status">click to copy</span>
 </button>
-<button class="btn" onclick="copyCode(this, 'mcm')">
-  <span>Matrix Chain Multiplication</span>
-  <span class="tag">DP</span>
-  <span class="indicator" id="ind-mcm">click to copy</span>
+<button class="btn" onclick="copy(this,'mcm')">
+  <span>Matrix Chain Multiplication</span><span class="tag">DP</span><span class="status">click to copy</span>
 </button>
-<button class="btn" onclick="copyCode(this, 'lcs')">
-  <span>Longest Common Subsequence</span>
-  <span class="tag">DP</span>
-  <span class="indicator" id="ind-lcs">click to copy</span>
+<button class="btn" onclick="copy(this,'lcs')">
+  <span>Longest Common Subsequence</span><span class="tag">DP</span><span class="status">click to copy</span>
 </button>
-<button class="btn" onclick="copyCode(this, 'mss')">
-  <span>Maximum Subarray Sum</span>
-  <span class="tag">Divide &amp; Conquer</span>
-  <span class="indicator" id="ind-mss">click to copy</span>
+<button class="btn" onclick="copy(this,'mss')">
+  <span>Maximum Subarray Sum</span><span class="tag">Divide &amp; Conquer</span><span class="status">click to copy</span>
 </button>
-<button class="btn" onclick="copyCode(this, 'graphcolor')">
-  <span>Graph Coloring</span>
-  <span class="tag">Backtracking</span>
-  <span class="indicator" id="ind-graphcolor">click to copy</span>
+<button class="btn" onclick="copy(this,'graphcolor')">
+  <span>Graph Coloring</span><span class="tag">Backtracking</span><span class="status">click to copy</span>
 </button>
-<button class="btn" onclick="copyCode(this, 'nqueens')">
-  <span>N-Queens</span>
-  <span class="tag">Backtracking</span>
-  <span class="indicator" id="ind-nqueens">click to copy</span>
+<button class="btn" onclick="copy(this,'nqueens')">
+  <span>N-Queens</span><span class="tag">Backtracking</span><span class="status">click to copy</span>
 </button>
-<button class="btn" onclick="copyCode(this, 'subset')">
-  <span>Subset Sum</span>
-  <span class="tag">Backtracking</span>
-  <span class="indicator" id="ind-subset">click to copy</span>
+<button class="btn" onclick="copy(this,'subset')">
+  <span>Subset Sum</span><span class="tag">Backtracking</span><span class="status">click to copy</span>
 </button>
-</div>
+
 <script>
 const codes = {
+
 knapsack: `#include <iostream>
 #include <vector>
 #include <algorithm>
-#include <iomanip> 
+#include <iomanip>
 
 using namespace std;
 
 void knapsack01(int W, const vector<int>& wt, const vector<int>& val) {
     int n = val.size();
-    
-    
     vector<vector<int>> dp(n + 1, vector<int>(W + 1, 0));
 
-  
     for (int i = 1; i <= n; i++) {
         for (int w = 1; w <= W; w++) {
-           
             if (wt[i - 1] <= w) {
-               
                 dp[i][w] = max(dp[i - 1][w], val[i - 1] + dp[i - 1][w - wt[i - 1]]);
             } else {
-                
                 dp[i][w] = dp[i - 1][w];
             }
         }
     }
 
-   
     cout << "--- 0/1 Knapsack DP Table ---" << endl;
-    
-   
-    cout << "  i\\\\w |";
+    cout << "  i\\w |";
     for (int w = 0; w <= W; w++) {
-        cout << setw(5) << w; 
+        cout << setw(5) << w;
     }
-  
 
     for (int i = 0; i <= n; i++) {
         cout << "  i=" << i << " |";
@@ -107,18 +89,14 @@ void knapsack01(int W, const vector<int>& wt, const vector<int>& val) {
         cout << endl;
     }
 
-  
-    cout << "\\nFinal Maximum Value: " << dp[n][W] << endl;
+    cout << "\nFinal Maximum Value: " << dp[n][W] << endl;
 }
 
 int main() {
-
     vector<int> val = {60, 100, 120};
     vector<int> wt = {1, 2, 3};
     int W = 5;
-
     knapsack01(W, wt, val);
-
     return 0;
 }`,
 
@@ -138,17 +116,14 @@ int getLength(long long value) {
 }
 
 long long karatsuba(long long x, long long y) {
-    
     if (x < 10 || y < 10) {
         return x * y;
     }
 
-    
     int n = max(getLength(x), getLength(y));
     int half = n / 2;
     long long m = pow(10, half);
 
-    
     long long high1 = x / m;
     long long low1 = x % m;
     long long high2 = y / m;
@@ -158,7 +133,6 @@ long long karatsuba(long long x, long long y) {
     long long z2 = karatsuba(high1, high2);
     long long z1 = karatsuba((low1 + high1), (low2 + high2)) - z2 - z0;
 
-    
     return (z2 * pow(10, 2 * half)) + (z1 * m) + z0;
 }
 
@@ -186,7 +160,7 @@ int main(){
     int c[n+1][n+1];
     for(int i=1;i<=n;i++){
         c[i][i] = 0;
-        cout<<"c["<<i<<","<<i<<"] = 0\\n";
+        cout<<"c["<<i<<","<<i<<"] = 0\n";
     }
     for(int l=2;l<=n;l++){
         for(int i=1;i<=n-l+1;i++){
@@ -199,20 +173,19 @@ int main(){
             cout<<"c["<<i<<","<<j<<"] = "<<c[i][j]<<endl;
         }
     }
-return 0;
+    return 0;
 }`,
 
 lcs: `#include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm> 
+#include <algorithm>
 
 using namespace std;
 
 void printLCS(string s1, string s2) {
     int m = s1.length();
     int n = s2.length();
-    
     vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
 
     for (int i = 1; i <= m; i++) {
@@ -225,21 +198,17 @@ void printLCS(string s1, string s2) {
         }
     }
 
-   
     string result = "";
-    int i = m, j = n; 
+    int i = m, j = n;
 
     while (i > 0 && j > 0) {
         if (s1[i - 1] == s2[j - 1]) {
             result += s1[i - 1];
-            i--; 
-            j--; 
-        } 
-        else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; 
-        } 
-        else {
-            j--; 
+            i--; j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
         }
     }
 
@@ -256,15 +225,14 @@ int main() {
     cout << "String 1: " << s1 << endl;
     cout << "String 2: " << s2 << endl;
     cout << "------------------" << endl;
-    
-    printLCS(s1, s2);
 
+    printLCS(s1, s2);
     return 0;
 }`,
 
 mss: `#include <iostream>
 #include <vector>
-#include <climits> 
+#include <climits>
 
 using namespace std;
 
@@ -273,7 +241,6 @@ struct Result {
     int end;
     int sum;
 };
-
 
 Result maxCrossingSum(const vector<int>& arr, int low, int mid, int high) {
     int leftSum = INT_MIN;
@@ -284,7 +251,7 @@ Result maxCrossingSum(const vector<int>& arr, int low, int mid, int high) {
         currentSum += arr[i];
         if (currentSum > leftSum) {
             leftSum = currentSum;
-            maxLeftIndex = i; 
+            maxLeftIndex = i;
         }
     }
 
@@ -296,7 +263,7 @@ Result maxCrossingSum(const vector<int>& arr, int low, int mid, int high) {
         currentSum += arr[i];
         if (currentSum > rightSum) {
             rightSum = currentSum;
-            maxRightIndex = i; 
+            maxRightIndex = i;
         }
     }
 
@@ -304,29 +271,19 @@ Result maxCrossingSum(const vector<int>& arr, int low, int mid, int high) {
 }
 
 Result maxSubArray(const vector<int>& arr, int low, int high) {
-    
     if (low == high) {
         return {low, high, arr[low]};
     }
 
     int mid = low + (high - low) / 2;
 
-   
     Result left = maxSubArray(arr, low, mid);
     Result right = maxSubArray(arr, mid + 1, high);
-
     Result cross = maxCrossingSum(arr, low, mid, high);
 
-    
-    if (left.sum >= right.sum && left.sum >= cross.sum) {
-        return left;
-    } 
-    else if (right.sum >= left.sum && right.sum >= cross.sum) {
-        return right;
-    } 
-    else {
-        return cross;
-    }
+    if (left.sum >= right.sum && left.sum >= cross.sum) return left;
+    else if (right.sum >= left.sum && right.sum >= cross.sum) return right;
+    else return cross;
 }
 
 int main() {
@@ -334,7 +291,7 @@ int main() {
     int n = arr.size();
 
     Result result = maxSubArray(arr, 0, n - 1);
-    
+
     cout << "Maximum Subarray Sum : " << result.sum << endl;
     cout << "Starts at index      : " << result.start << endl;
     cout << "Ends at index        : " << result.end << endl;
@@ -348,69 +305,70 @@ int n,m;
 int graph[100][100];
 int color[100];
 bool isSafe(int v,int c){
-for(int i=0;i<n;i++){
-if(graph[v][i]==1&&color[i]==c){
-return false;
-}
-}
-return true;
+    for(int i=0;i<n;i++){
+        if(graph[v][i]==1&&color[i]==c){
+            return false;
+        }
+    }
+    return true;
 }
 void solve(int v){
-if(v==n){
-cout<<"{ ";
-for(int i=0;i<n;i++){
-cout<<color[i]<<" ";
-}
-cout<<"}"<<endl;
-return;
-}
-for(int c=1;c<=m;c++){
-if(isSafe(v,c)){
-color[v] = c;
-solve(v+1);
-color[v] = 0;
-}
-}
+    if(v==n){
+        cout<<"{ ";
+        for(int i=0;i<n;i++){
+            cout<<color[i]<<" ";
+        }
+        cout<<"}"<<endl;
+        return;
+    }
+    for(int c=1;c<=m;c++){
+        if(isSafe(v,c)){
+            color[v] = c;
+            solve(v+1);
+            color[v] = 0;
+        }
+    }
 }
 int main(){
-cin>>n>>m;
-for(int i=0;i<n;i++){
-for(int j=0;j<n;j++){
-cin>>graph[i][j];
-}
-}
-for(int i=0;i<n;i++){
-color[i] = 0;
-}
-solve(0);
-return 0;
+    cin>>n>>m;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            cin>>graph[i][j];
+        }
+    }
+    for(int i=0;i<n;i++){
+        color[i] = 0;
+    }
+    solve(0);
+    return 0;
 }`,
 
 nqueens: `#include<bits/stdc++.h>
 using namespace std;
 int b[10], n;
 bool safe(int r, int c){
-for(int i=0;i<r;i++)
-if(b[i]==c||abs(b[i]-c)==abs(i-r)) return false;
-return true;
+    for(int i=0;i<r;i++)
+        if(b[i]==c||abs(b[i]-c)==abs(i-r)) return false;
+    return true;
 }
 void solve(int r){
-if(r==n){
-for(int i=0;i<n;i++){
-cout<<b[i]+1<<" ";
-cout<<"\\n"; return;
-}
-}
-for(int c=0;c<n;c++){
-cout<<"("<<r+1<<","<<c+1<<")"<<(safe(r,c)?" placed":" blocked")<<"\\n";
-if(safe(r,c)){
-b[r]=c;
-solve(r+1); }
-}
+    if(r==n){
+        for(int i=0;i<n;i++){
+            cout<<b[i]+1<<" ";
+        }
+        cout<<"\n"; return;
+    }
+    for(int c=0;c<n;c++){
+        cout<<"("<<r+1<<","<<c+1<<")"<<(safe(r,c)?" placed":" blocked")<<"\n";
+        if(safe(r,c)){
+            b[r]=c;
+            solve(r+1);
+        }
+    }
 }
 int main(){
-cin>>n;
-solve(0);
+    cin>>n;
+    solve(0);
 }`,
 
 subset: `#include <iostream>
@@ -418,45 +376,55 @@ using namespace std;
 int n,target;
 int w[100];
 void printSubset(int x[],int size){
-cout<<"{ ";
-for(int i=0;i<size;i++){
-cout<<x[i]<<" ";
+    cout<<"{ ";
+    for(int i=0;i<size;i++){
+        cout<<x[i]<<" ";
+    }
+    cout<<"}"<<endl;
 }
-cout<<"}"<<endl;
-}
-void subset(int i,int currentSum,int x[], int size ){
-if(currentSum == target){
-printSubset(x,size);
-return;
-}
-if(i>= n || currentSum > target){
-return;
-}
-x[size] = w[i];
-subset(i+1,currentSum + w[i],x,size+1);
-subset(i+1,currentSum,x,size);
+void subset(int i,int currentSum,int x[], int size){
+    if(currentSum == target){
+        printSubset(x,size);
+        return;
+    }
+    if(i>= n || currentSum > target){
+        return;
+    }
+    x[size] = w[i];
+    subset(i+1,currentSum + w[i],x,size+1);
+    subset(i+1,currentSum,x,size);
 }
 int main(){
-cin>> n;
-for(int i=0;i<n;i++){
-cin>>w[i];
-}
-cin>>target;
-int x[100];
-subset(0,0,x,0);
-return 0;
+    cin>> n;
+    for(int i=0;i<n;i++){
+        cin>>w[i];
+    }
+    cin>>target;
+    int x[100];
+    subset(0,0,x,0);
+    return 0;
 }`
+
 };
 
-function copyCode(btn, key) {
-  navigator.clipboard.writeText(codes[key]).then(() => {
-    btn.classList.add('copied');
-    const ind = document.getElementById('ind-' + key);
-    ind.textContent = 'copied!';
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      ind.textContent = 'click to copy';
-    }, 1800);
-  });
+function copy(btn, key) {
+  const ta = document.createElement('textarea');
+  ta.value = codes[key];
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+
+  const status = btn.querySelector('.status');
+  btn.classList.add('copied');
+  status.textContent = 'copied!';
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    status.textContent = 'click to copy';
+  }, 1800);
 }
 </script>
+</body>
+</html>
