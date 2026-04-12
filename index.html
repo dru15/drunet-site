@@ -1,422 +1,462 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dhruv Agnihotri — Coming Soon</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --c1: #6c63ff;
-      --c2: #a78bfa;
-      --c3: #38bdf8;
-      --dark: #08080f;
-      --darker: #050509;
-      --text: #f0f0ff;
-      --muted: rgba(240,240,255,0.45);
-      --card-bg: rgba(255,255,255,0.04);
-      --card-border: rgba(255,255,255,0.08);
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0d0d0d; }
+.wrap { padding: 1.5rem; font-family: var(--font-mono); }
+.btn {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 14px 18px; margin-bottom: 10px;
+  background: #161616; border: 0.5px solid #2a2a2a;
+  border-radius: 8px; cursor: pointer; color: #c9c9c9;
+  font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.03em;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover { background: #1e1e1e; border-color: #3d3d3d; color: #e8e8e8; }
+.btn.copied { border-color: #1d9e75; color: #5DCAA5; }
+.tag { font-size: 11px; color: #555; letter-spacing: 0.08em; text-transform: uppercase; }
+.btn.copied .tag { color: #1d9e75; }
+.indicator { font-size: 11px; color: #555; min-width: 50px; text-align: right; }
+.btn.copied .indicator { color: #1d9e75; }
+</style>
+<div class="wrap">
+<button class="btn" onclick="copyCode(this, 'knapsack')">
+  <span>0/1 Knapsack</span>
+  <span class="tag">DP</span>
+  <span class="indicator" id="ind-knapsack">click to copy</span>
+</button>
+<button class="btn" onclick="copyCode(this, 'karatsuba')">
+  <span>Karatsuba Multiplication</span>
+  <span class="tag">Divide &amp; Conquer</span>
+  <span class="indicator" id="ind-karatsuba">click to copy</span>
+</button>
+<button class="btn" onclick="copyCode(this, 'mcm')">
+  <span>Matrix Chain Multiplication</span>
+  <span class="tag">DP</span>
+  <span class="indicator" id="ind-mcm">click to copy</span>
+</button>
+<button class="btn" onclick="copyCode(this, 'lcs')">
+  <span>Longest Common Subsequence</span>
+  <span class="tag">DP</span>
+  <span class="indicator" id="ind-lcs">click to copy</span>
+</button>
+<button class="btn" onclick="copyCode(this, 'mss')">
+  <span>Maximum Subarray Sum</span>
+  <span class="tag">Divide &amp; Conquer</span>
+  <span class="indicator" id="ind-mss">click to copy</span>
+</button>
+<button class="btn" onclick="copyCode(this, 'graphcolor')">
+  <span>Graph Coloring</span>
+  <span class="tag">Backtracking</span>
+  <span class="indicator" id="ind-graphcolor">click to copy</span>
+</button>
+<button class="btn" onclick="copyCode(this, 'nqueens')">
+  <span>N-Queens</span>
+  <span class="tag">Backtracking</span>
+  <span class="indicator" id="ind-nqueens">click to copy</span>
+</button>
+<button class="btn" onclick="copyCode(this, 'subset')">
+  <span>Subset Sum</span>
+  <span class="tag">Backtracking</span>
+  <span class="indicator" id="ind-subset">click to copy</span>
+</button>
+</div>
+<script>
+const codes = {
+knapsack: `#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <iomanip> 
+
+using namespace std;
+
+void knapsack01(int W, const vector<int>& wt, const vector<int>& val) {
+    int n = val.size();
+    
+    
+    vector<vector<int>> dp(n + 1, vector<int>(W + 1, 0));
+
+  
+    for (int i = 1; i <= n; i++) {
+        for (int w = 1; w <= W; w++) {
+           
+            if (wt[i - 1] <= w) {
+               
+                dp[i][w] = max(dp[i - 1][w], val[i - 1] + dp[i - 1][w - wt[i - 1]]);
+            } else {
+                
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
     }
 
-    html, body {
-      height: 100%;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--dark);
-      color: var(--text);
-      overflow-x: hidden;
+   
+    cout << "--- 0/1 Knapsack DP Table ---" << endl;
+    
+   
+    cout << "  i\\\\w |";
+    for (int w = 0; w <= W; w++) {
+        cout << setw(5) << w; 
+    }
+  
+
+    for (int i = 0; i <= n; i++) {
+        cout << "  i=" << i << " |";
+        for (int w = 0; w <= W; w++) {
+            cout << setw(5) << dp[i][w];
+        }
+        cout << endl;
     }
 
-    /* === CANVAS BG === */
-    #bg-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
+  
+    cout << "\\nFinal Maximum Value: " << dp[n][W] << endl;
+}
+
+int main() {
+
+    vector<int> val = {60, 100, 120};
+    vector<int> wt = {1, 2, 3};
+    int W = 5;
+
+    knapsack01(W, wt, val);
+
+    return 0;
+}`,
+
+karatsuba: `#include <iostream>
+#include <cmath>
+#include <algorithm>
+
+using namespace std;
+
+int getLength(long long value) {
+    int count = 0;
+    while (value > 0) {
+        count++;
+        value /= 10;
+    }
+    return count;
+}
+
+long long karatsuba(long long x, long long y) {
+    
+    if (x < 10 || y < 10) {
+        return x * y;
     }
 
-    /* === GRAIN OVERLAY === */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      background-repeat: repeat;
-      background-size: 180px;
-      opacity: 0.5;
-      pointer-events: none;
+    
+    int n = max(getLength(x), getLength(y));
+    int half = n / 2;
+    long long m = pow(10, half);
+
+    
+    long long high1 = x / m;
+    long long low1 = x % m;
+    long long high2 = y / m;
+    long long low2 = y % m;
+
+    long long z0 = karatsuba(low1, low2);
+    long long z2 = karatsuba(high1, high2);
+    long long z1 = karatsuba((low1 + high1), (low2 + high2)) - z2 - z0;
+
+    
+    return (z2 * pow(10, 2 * half)) + (z1 * m) + z0;
+}
+
+int main() {
+    long long num1 = 1234;
+    long long num2 = 5678;
+
+    cout << "Multiplying " << num1 << " and " << num2 << endl;
+    cout << "Standard result  : " << (num1 * num2) << endl;
+    cout << "Karatsuba result : " << karatsuba(num1, num2) << endl;
+
+    return 0;
+}`,
+
+mcm: `#include <iostream>
+#include <climits>
+using namespace std;
+int main(){
+    int n;
+    cin>>n;
+    int p[n+1];
+    for(int i=0;i<=n;i++){
+        cin>>p[i];
+    }
+    int c[n+1][n+1];
+    for(int i=1;i<=n;i++){
+        c[i][i] = 0;
+        cout<<"c["<<i<<","<<i<<"] = 0\\n";
+    }
+    for(int l=2;l<=n;l++){
+        for(int i=1;i<=n-l+1;i++){
+            int j = i+l-1;
+            c[i][j] = INT_MAX;
+            for(int k=i;k<j;k++){
+                int cost = c[i][k] + c[k+1][j] + p[i-1] * p[k] * p[j];
+                c[i][j] = min(c[i][j], cost);
+            }
+            cout<<"c["<<i<<","<<j<<"] = "<<c[i][j]<<endl;
+        }
+    }
+return 0;
+}`,
+
+lcs: `#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm> 
+
+using namespace std;
+
+void printLCS(string s1, string s2) {
+    int m = s1.length();
+    int n = s2.length();
+    
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (s1[i - 1] == s2[j - 1]) {
+                dp[i][j] = 1 + dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
     }
 
-    /* === SCENE WRAPPER === */
-    .scene {
-      position: relative;
-      z-index: 2;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem 1.5rem;
-      perspective: 1000px;
+   
+    string result = "";
+    int i = m, j = n; 
+
+    while (i > 0 && j > 0) {
+        if (s1[i - 1] == s2[j - 1]) {
+            result += s1[i - 1];
+            i--; 
+            j--; 
+        } 
+        else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; 
+        } 
+        else {
+            j--; 
+        }
     }
 
-    /* === FLOATING CARD === */
-    .card-3d {
-      position: relative;
-      transform-style: preserve-3d;
-      will-change: transform;
-      transition: transform 0.12s ease-out;
+    reverse(result.begin(), result.end());
+
+    cout << "Length of LCS : " << dp[m][n] << endl;
+    cout << "The Sequence  : " << result << endl;
+}
+
+int main() {
+    string s1 = "ABCBDAB";
+    string s2 = "BDCAB";
+
+    cout << "String 1: " << s1 << endl;
+    cout << "String 2: " << s2 << endl;
+    cout << "------------------" << endl;
+    
+    printLCS(s1, s2);
+
+    return 0;
+}`,
+
+mss: `#include <iostream>
+#include <vector>
+#include <climits> 
+
+using namespace std;
+
+struct Result {
+    int start;
+    int end;
+    int sum;
+};
+
+
+Result maxCrossingSum(const vector<int>& arr, int low, int mid, int high) {
+    int leftSum = INT_MIN;
+    int currentSum = 0;
+    int maxLeftIndex = mid;
+
+    for (int i = mid; i >= low; i--) {
+        currentSum += arr[i];
+        if (currentSum > leftSum) {
+            leftSum = currentSum;
+            maxLeftIndex = i; 
+        }
     }
 
-    .glass {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 4rem 4rem 3.5rem;
-      max-width: 640px;
-      width: 100%;
-      backdrop-filter: blur(32px);
-      -webkit-backdrop-filter: blur(32px);
-      position: relative;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1px var(--card-border),
-        0 40px 120px rgba(108,99,255,0.15),
-        0 0 80px rgba(56,189,248,0.05) inset;
-      text-align: center;
+    int rightSum = INT_MIN;
+    currentSum = 0;
+    int maxRightIndex = mid + 1;
+
+    for (int i = mid + 1; i <= high; i++) {
+        currentSum += arr[i];
+        if (currentSum > rightSum) {
+            rightSum = currentSum;
+            maxRightIndex = i; 
+        }
     }
 
-    /* top shimmer line */
-    .glass::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 10%; right: 10%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(167,139,250,0.6), rgba(56,189,248,0.6), transparent);
-      border-radius: 1px;
+    return {maxLeftIndex, maxRightIndex, leftSum + rightSum};
+}
+
+Result maxSubArray(const vector<int>& arr, int low, int high) {
+    
+    if (low == high) {
+        return {low, high, arr[low]};
     }
 
-    /* internal glow blob */
-    .glass::after {
-      content: '';
-      position: absolute;
-      top: -60px; left: 50%;
-      transform: translateX(-50%);
-      width: 320px; height: 200px;
-      background: radial-gradient(ellipse, rgba(108,99,255,0.18) 0%, transparent 70%);
-      pointer-events: none;
-      border-radius: 50%;
+    int mid = low + (high - low) / 2;
+
+   
+    Result left = maxSubArray(arr, low, mid);
+    Result right = maxSubArray(arr, mid + 1, high);
+
+    Result cross = maxCrossingSum(arr, low, mid, high);
+
+    
+    if (left.sum >= right.sum && left.sum >= cross.sum) {
+        return left;
+    } 
+    else if (right.sum >= left.sum && right.sum >= cross.sum) {
+        return right;
+    } 
+    else {
+        return cross;
     }
+}
 
-    /* === AVATAR RING === */
-    .avatar-wrap {
-      position: relative;
-      width: 80px; height: 80px;
-      margin: 0 auto 1.75rem;
-    }
+int main() {
+    vector<int> arr = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
+    int n = arr.size();
 
-    .avatar-ring {
-      position: absolute;
-      inset: -6px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      background: conic-gradient(from 0deg, #6c63ff, #38bdf8, #a78bfa, #6c63ff) border-box;
-      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: destination-out;
-      mask-composite: exclude;
-      animation: spin 6s linear infinite;
-    }
+    Result result = maxSubArray(arr, 0, n - 1);
+    
+    cout << "Maximum Subarray Sum : " << result.sum << endl;
+    cout << "Starts at index      : " << result.start << endl;
+    cout << "Ends at index        : " << result.end << endl;
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    return 0;
+}`,
 
-    .avatar-inner {
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #6c63ff 0%, #38bdf8 100%);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.75rem;
-      font-weight: 700;
-      letter-spacing: -0.05em;
-      color: #fff;
-      user-select: none;
-    }
+graphcolor: `#include <bits/stdc++.h>
+using namespace std;
+int n,m;
+int graph[100][100];
+int color[100];
+bool isSafe(int v,int c){
+for(int i=0;i<n;i++){
+if(graph[v][i]==1&&color[i]==c){
+return false;
+}
+}
+return true;
+}
+void solve(int v){
+if(v==n){
+cout<<"{ ";
+for(int i=0;i<n;i++){
+cout<<color[i]<<" ";
+}
+cout<<"}"<<endl;
+return;
+}
+for(int c=1;c<=m;c++){
+if(isSafe(v,c)){
+color[v] = c;
+solve(v+1);
+color[v] = 0;
+}
+}
+}
+int main(){
+cin>>n>>m;
+for(int i=0;i<n;i++){
+for(int j=0;j<n;j++){
+cin>>graph[i][j];
+}
+}
+for(int i=0;i<n;i++){
+color[i] = 0;
+}
+solve(0);
+return 0;
+}`,
 
-    /* === BADGE === */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(108,99,255,0.15);
-      border: 1px solid rgba(108,99,255,0.35);
-      border-radius: 100px;
-      padding: 5px 14px;
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--c2);
-      margin-bottom: 1.5rem;
-      font-weight: 500;
-    }
+nqueens: `#include<bits/stdc++.h>
+using namespace std;
+int b[10], n;
+bool safe(int r, int c){
+for(int i=0;i<r;i++)
+if(b[i]==c||abs(b[i]-c)==abs(i-r)) return false;
+return true;
+}
+void solve(int r){
+if(r==n){
+for(int i=0;i<n;i++){
+cout<<b[i]+1<<" ";
+cout<<"\\n"; return;
+}
+}
+for(int c=0;c<n;c++){
+cout<<"("<<r+1<<","<<c+1<<")"<<(safe(r,c)?" placed":" blocked")<<"\\n";
+if(safe(r,c)){
+b[r]=c;
+solve(r+1); }
+}
+}
+int main(){
+cin>>n;
+solve(0);
+}`,
 
-    .badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #6c63ff;
-      box-shadow: 0 0 6px #6c63ff;
-      animation: pulse 2s ease-in-out infinite;
-    }
+subset: `#include <iostream>
+using namespace std;
+int n,target;
+int w[100];
+void printSubset(int x[],int size){
+cout<<"{ ";
+for(int i=0;i<size;i++){
+cout<<x[i]<<" ";
+}
+cout<<"}"<<endl;
+}
+void subset(int i,int currentSum,int x[], int size ){
+if(currentSum == target){
+printSubset(x,size);
+return;
+}
+if(i>= n || currentSum > target){
+return;
+}
+x[size] = w[i];
+subset(i+1,currentSum + w[i],x,size+1);
+subset(i+1,currentSum,x,size);
+}
+int main(){
+cin>> n;
+for(int i=0;i<n;i++){
+cin>>w[i];
+}
+cin>>target;
+int x[100];
+subset(0,0,x,0);
+return 0;
+}`
+};
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.4); opacity: 0.6; }
-    }
-
-    /* === NAME === */
-    .name {
-      font-size: clamp(2.2rem, 6vw, 3.2rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(110deg, #f0f0ff 20%, #a78bfa 55%, #38bdf8 85%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .tagline {
-      font-size: 1rem;
-      color: var(--muted);
-      font-weight: 400;
-      margin-bottom: 2.5rem;
-      line-height: 1.6;
-    }
-
-    /* === DIVIDER === */
-    .divider {
-      width: 48px; height: 2px;
-      background: linear-gradient(90deg, #6c63ff, #38bdf8);
-      border-radius: 2px;
-      margin: 0 auto 2.5rem;
-    }
-
-    /* === SKILLS CHIPS === */
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 2.5rem;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 100px;
-      padding: 5px 12px;
-      font-size: 0.78rem;
-      color: rgba(240,240,255,0.65);
-      font-weight: 400;
-      letter-spacing: 0.01em;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
-    }
-
-    .chip:hover {
-      background: rgba(108,99,255,0.12);
-      border-color: rgba(108,99,255,0.3);
-      color: var(--c2);
-    }
-
-    .chip-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    /* === FLOATING ORBS === */
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(80px);
-      opacity: 0.18;
-    }
-
-    .orb1 {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, #6c63ff, transparent 70%);
-      top: -120px; left: -80px;
-      animation: float1 18s ease-in-out infinite;
-    }
-
-    .orb2 {
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, #38bdf8, transparent 70%);
-      bottom: -80px; right: -60px;
-      animation: float2 22s ease-in-out infinite;
-    }
-
-    .orb3 {
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, #a78bfa, transparent 70%);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      animation: float3 15s ease-in-out infinite;
-    }
-
-    @keyframes float1 {
-      0%, 100% { transform: translate(0, 0); }
-      33% { transform: translate(40px, 30px); }
-      66% { transform: translate(-20px, 60px); }
-    }
-
-    @keyframes float2 {
-      0%, 100% { transform: translate(0, 0); }
-      33% { transform: translate(-50px, -30px); }
-      66% { transform: translate(20px, -60px); }
-    }
-
-    @keyframes float3 {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.3); }
-    }
-
-    /* === ENTRANCE ANIMATIONS === */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .glass > * { animation: fadeUp 0.7s ease both; }
-    .avatar-wrap  { animation-delay: 0.05s; }
-    .badge        { animation-delay: 0.12s; }
-    .name         { animation-delay: 0.18s; }
-    .tagline      { animation-delay: 0.22s; }
-    .divider      { animation-delay: 0.26s; }
-    .chips        { animation-delay: 0.32s; }
-
-    @media (max-width: 520px) {
-      .glass { padding: 3rem 2rem 2.5rem; border-radius: 20px; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Animated bg canvas -->
-  <canvas id="bg-canvas"></canvas>
-
-  <!-- Floating orbs -->
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
-
-  <div class="scene" id="scene">
-    <div class="card-3d" id="card3d">
-      <div class="glass">
-
-        <div class="avatar-wrap">
-          <div class="avatar-ring"></div>
-          <div class="avatar-inner">DA</div>
-        </div>
-
-        <div class="badge">
-          <span class="badge-dot"></span>
-          Portfolio — Coming Soon
-        </div>
-
-        <h1 class="name">Dhruv Agnihotri</h1>
-        <p class="tagline">Crafting something extraordinary.<br>A portfolio worth the wait.</p>
-
-        <div class="divider"></div>
-
-        <!-- Skills chips -->
-        <div class="chips">
-          <span class="chip"><span class="chip-dot" style="background:#6c63ff"></span>Full-Stack Dev</span>
-          <span class="chip"><span class="chip-dot" style="background:#38bdf8"></span>UI / UX Design</span>
-          <span class="chip"><span class="chip-dot" style="background:#a78bfa"></span>React & Next.js</span>
-          <span class="chip"><span class="chip-dot" style="background:#34d399"></span>Node.js</span>
-          <span class="chip"><span class="chip-dot" style="background:#f472b6"></span>Creative Dev</span>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <script>
-    /* === PARTICLE CANVAS === */
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let W, H, particles = [];
-
-    function resize() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-
-    class Particle {
-      constructor() { this.reset(true); }
-      reset(rand) {
-        this.x = Math.random() * W;
-        this.y = rand ? Math.random() * H : H + 10;
-        this.r = Math.random() * 1.6 + 0.4;
-        this.speed = Math.random() * 0.35 + 0.1;
-        this.drift = (Math.random() - 0.5) * 0.3;
-        this.alpha = Math.random() * 0.5 + 0.15;
-        const t = Math.random();
-        if (t < 0.4) this.color = `rgba(108,99,255,${this.alpha})`;
-        else if (t < 0.7) this.color = `rgba(56,189,248,${this.alpha})`;
-        else this.color = `rgba(167,139,250,${this.alpha})`;
-      }
-      update() {
-        this.y -= this.speed;
-        this.x += this.drift;
-        if (this.y < -5) this.reset(false);
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-      }
-    }
-
-    function initParticles() {
-      particles = Array.from({ length: 120 }, () => new Particle());
-    }
-
-    function animateParticles() {
-      ctx.clearRect(0, 0, W, H);
-      particles.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(animateParticles);
-    }
-
-    resize();
-    initParticles();
-    animateParticles();
-    window.addEventListener('resize', () => { resize(); initParticles(); });
-
-    /* === 3D TILT === */
-    const scene = document.getElementById('scene');
-    const card = document.getElementById('card3d');
-
-    scene.addEventListener('mousemove', e => {
-      const rect = scene.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = (e.clientX - cx) / (rect.width / 2);
-      const dy = (e.clientY - cy) / (rect.height / 2);
-      card.style.transform = `rotateY(${dx * 10}deg) rotateX(${-dy * 8}deg)`;
-    });
-
-    scene.addEventListener('mouseleave', () => {
-      card.style.transform = 'rotateY(0deg) rotateX(0deg)';
-    });
-
-  </script>
-</body>
-</html>
+function copyCode(btn, key) {
+  navigator.clipboard.writeText(codes[key]).then(() => {
+    btn.classList.add('copied');
+    const ind = document.getElementById('ind-' + key);
+    ind.textContent = 'copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      ind.textContent = 'click to copy';
+    }, 1800);
+  });
+}
+</script>
