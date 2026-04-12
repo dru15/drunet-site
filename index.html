@@ -20,11 +20,11 @@
   .btn.copyall { border-color: #553333; color: #c07070; margin-bottom: 2rem; }
   .btn.copyall:hover { border-color: #aa4444; color: #f99090; background: #1a1010; }
   .btn.copyall.copied { border-color: #1d9e75; color: #5DCAA5; }
-  .tag { font-size: 11px; color: #555; letter-spacing: 0.08em; text-transform: uppercase; }
+  .tag { font-size: 11px; color: #555; letter-spacing: 0.08em; text-transform: uppercase; flex-shrink: 0; margin: 0 1rem; }
   .btn.copied .tag { color: #1d9e75; }
   .btn.copyall .tag { color: #663333; }
   .btn.copyall.copied .tag { color: #1d9e75; }
-  .status { font-size: 11px; color: #555; min-width: 70px; text-align: right; }
+  .status { font-size: 11px; color: #555; min-width: 70px; text-align: right; flex-shrink: 0; }
   .btn.copied .status { color: #1d9e75; }
   .btn.copyall .status { color: #663333; }
   .btn.copyall.copied .status { color: #1d9e75; }
@@ -35,7 +35,7 @@
 <h1>Algorithm Codes</h1>
 
 <button class="btn copyall" onclick="copyAll(this)">
-  <span>Copy All</span><span class="tag">All 9 topics</span><span class="status">click to copy</span>
+  <span>Copy All</span><span class="tag">All 13 topics</span><span class="status">click to copy</span>
 </button>
 
 <hr>
@@ -66,6 +66,18 @@
 </button>
 <button class="btn" onclick="copyOne(this,'subset')">
   <span>Subset Sum</span><span class="tag">Backtracking</span><span class="status">click to copy</span>
+</button>
+<button class="btn" onclick="copyOne(this,'fordfulkerson')">
+  <span>Ford Fulkerson</span><span class="tag">Graph / Max Flow</span><span class="status">click to copy</span>
+</button>
+<button class="btn" onclick="copyOne(this,'floydwarshall')">
+  <span>Floyd Warshall</span><span class="tag">DP / Graph</span><span class="status">click to copy</span>
+</button>
+<button class="btn" onclick="copyOne(this,'rodcutting')">
+  <span>Rod Cutting</span><span class="tag">DP</span><span class="status">click to copy</span>
+</button>
+<button class="btn" onclick="copyOne(this,'bellmanford')">
+  <span>Bellman Ford</span><span class="tag">Graph / SSSP</span><span class="status">click to copy</span>
 </button>
 
 <script>
@@ -479,6 +491,236 @@ codes.subset = [
 '}'
 ].join('\n');
 
+codes.fordfulkerson = [
+'#include <iostream>',
+'#include <vector>',
+'#include <queue>',
+'#include <climits>',
+'',
+'using namespace std;',
+'',
+'const int V = 6;',
+'',
+'bool bfs(int graph[V][V], int s, int t, int parent[]) {',
+'    bool visited[V] = {false};',
+'    queue<int> q;',
+'    q.push(s);',
+'    visited[s] = true;',
+'    parent[s] = -1;',
+'',
+'    while (!q.empty()) {',
+'        int u = q.front(); q.pop();',
+'        for (int v = 0; v < V; v++) {',
+'            if (!visited[v] && graph[u][v] > 0) {',
+'                q.push(v);',
+'                parent[v] = u;',
+'                visited[v] = true;',
+'                if (v == t) return true;',
+'            }',
+'        }',
+'    }',
+'    return false;',
+'}',
+'',
+'int fordFulkerson(int graph[V][V], int s, int t) {',
+'    int parent[V];',
+'    int max_flow = 0;',
+'',
+'    while (bfs(graph, s, t, parent)) {',
+'        int path_flow = INT_MAX;',
+'        vector<int> path;',
+'        path.push_back(t);',
+'',
+'        for (int v = t; v != s; v = parent[v]) {',
+'            int u = parent[v];',
+'            path_flow = min(path_flow, graph[u][v]);',
+'            path.push_back(u);',
+'        }',
+'',
+'        cout << "Augmenting Path: ";',
+'        for (int i = path.size() - 1; i >= 0; i--) {',
+'            cout << path[i] << (i == 0 ? "" : " -> ");',
+'        }',
+'        cout << " | Flow: " << path_flow << endl;',
+'',
+'        for (int v = t; v != s; v = parent[v]) {',
+'            int u = parent[v];',
+'            graph[u][v] -= path_flow;',
+'            graph[v][u] += path_flow;',
+'        }',
+'',
+'        max_flow += path_flow;',
+'    }',
+'    return max_flow;',
+'}',
+'',
+'int main() {',
+'    int graph[V][V] = {',
+'        {0, 16, 13,  0,  0, 0},',
+'        {0,  0, 10, 12,  0, 0},',
+'        {0,  4,  0,  0, 14, 0},',
+'        {0,  0,  9,  0,  0, 20},',
+'        {0,  0,  0,  7,  0, 4},',
+'        {0,  0,  0,  0,  0, 0}',
+'    };',
+'    int maxFlow = fordFulkerson(graph, 0, 5);',
+'    cout << endl;',
+'    cout << "Total Maximum Flow: " << maxFlow << endl;',
+'    return 0;',
+'}'
+].join('\n');
+
+codes.floydwarshall = [
+'#include <iostream>',
+'#include <vector>',
+'#include <algorithm>',
+'',
+'using namespace std;',
+'',
+'const int INF = 1e9;',
+'const int V = 4;',
+'',
+'void floydWarshall(int graph[V][V]) {',
+'    int dist[V][V];',
+'    for (int i = 0; i < V; i++)',
+'        for (int j = 0; j < V; j++)',
+'            dist[i][j] = graph[i][j];',
+'',
+'    for (int k = 0; k < V; k++) {',
+'        for (int i = 0; i < V; i++) {',
+'            for (int j = 0; j < V; j++) {',
+'                if (dist[i][k] != INF && dist[k][j] != INF) {',
+'                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);',
+'                }',
+'            }',
+'        }',
+'    }',
+'',
+'    cout << "--- Shortest Distances Between Every Pair ---" << endl;',
+'    for (int i = 0; i < V; i++) {',
+'        for (int j = 0; j < V; j++) {',
+'            if (dist[i][j] == INF) cout << "INF\\t";',
+'            else cout << dist[i][j] << "\\t";',
+'        }',
+'        cout << endl;',
+'    }',
+'}',
+'',
+'int main() {',
+'    int graph[V][V] = {',
+'        {0,   5,   INF, 10},',
+'        {INF, 0,   3,   INF},',
+'        {INF, INF, 0,   1},',
+'        {INF, INF, INF, 0}',
+'    };',
+'    floydWarshall(graph);',
+'    return 0;',
+'}'
+].join('\n');
+
+codes.rodcutting = [
+'#include <iostream>',
+'#include <vector>',
+'',
+'using namespace std;',
+'',
+'void rodCutting(vector<int>& price, int n) {',
+'    vector<int> dp(n + 1, 0);',
+'    vector<int> cuts(n + 1, 0);',
+'',
+'    for (int i = 1; i <= n; i++) {',
+'        for (int j = 0; j < i; j++) {',
+'            int cut_length    = j + 1;',
+'            int current_profit = price[j] + dp[i - cut_length];',
+'            if (current_profit > dp[i]) {',
+'                dp[i]   = current_profit;',
+'                cuts[i] = cut_length;',
+'            }',
+'        }',
+'    }',
+'',
+'    cout << "Maximum Obtainable Value is : $" << dp[n] << endl;',
+'    cout << "Exact pieces to cut         : ";',
+'    int remaining_length = n;',
+'    while (remaining_length > 0) {',
+'        cout << cuts[remaining_length] << " ";',
+'        remaining_length -= cuts[remaining_length];',
+'    }',
+'    cout << endl;',
+'}',
+'',
+'int main() {',
+'    vector<int> price = {1, 5, 8, 9, 10, 17, 17, 20};',
+'    int n = 8;',
+'    rodCutting(price, n);',
+'    return 0;',
+'}'
+].join('\n');
+
+codes.bellmanford = [
+'#include <iostream>',
+'using namespace std;',
+'',
+'const int INF = 1e9;',
+'',
+'struct Edge {',
+'    int u, v, w;',
+'};',
+'',
+'void bellmanFord(int V, int E, int source, Edge edges[]) {',
+'    int dist[100];',
+'    for (int i = 0; i < V; i++) dist[i] = INF;',
+'    dist[source] = 0;',
+'',
+'    cout << "--- Exam Trace Table ---" << endl;',
+'',
+'    for (int i = 1; i <= V - 1; i++) {',
+'        for (int j = 0; j < E; j++) {',
+'            int u = edges[j].u;',
+'            int v = edges[j].v;',
+'            int w = edges[j].w;',
+'            if (dist[u] != INF && dist[u] + w < dist[v]) {',
+'                dist[v] = dist[u] + w;',
+'            }',
+'        }',
+'        cout << "Iteration " << i << ": [ ";',
+'        for (int k = 0; k < V; k++) {',
+'            if (dist[k] == INF) cout << "INF ";',
+'            else cout << dist[k] << " ";',
+'        }',
+'        cout << "]\\n";',
+'    }',
+'',
+'    // check for negative weight cycle',
+'    for (int j = 0; j < E; j++) {',
+'        int u = edges[j].u;',
+'        int v = edges[j].v;',
+'        int w = edges[j].w;',
+'        if (dist[u] != INF && dist[u] + w < dist[v]) {',
+'            cout << "\\nError: Graph contains a negative weight cycle!" << endl;',
+'            return;',
+'        }',
+'    }',
+'',
+'    cout << "\\n--- Final Answer ---" << endl;',
+'    for (int i = 0; i < V; i++) {',
+'        cout << "Distance from " << source << " to " << i << " is " << dist[i] << endl;',
+'    }',
+'}',
+'',
+'int main() {',
+'    int V = 5;',
+'    int E = 8;',
+'    Edge edges[8] = {',
+'        {0, 1, -1}, {0, 2,  4},',
+'        {1, 2,  3}, {1, 3,  2}, {1, 4, 2},',
+'        {3, 2,  5}, {3, 1,  1}, {4, 3, -3}',
+'    };',
+'    bellmanFord(V, E, 0, edges);',
+'    return 0;',
+'}'
+].join('\n');
+
 var labels = {
   knapsack01:   '0/1 Knapsack',
   knapsackfrac: 'Fractional Knapsack',
@@ -488,10 +730,18 @@ var labels = {
   mss:          'Maximum Subarray Sum',
   graphcolor:   'Graph Coloring',
   nqueens:      'N-Queens',
-  subset:       'Subset Sum'
+  subset:       'Subset Sum',
+  fordfulkerson:'Ford Fulkerson',
+  floydwarshall:'Floyd Warshall',
+  rodcutting:   'Rod Cutting',
+  bellmanford:  'Bellman Ford'
 };
 
-var order = ['knapsack01','knapsackfrac','karatsuba','mcm','lcs','mss','graphcolor','nqueens','subset'];
+var order = [
+  'knapsack01','knapsackfrac','karatsuba','mcm','lcs','mss',
+  'graphcolor','nqueens','subset','fordfulkerson','floydwarshall',
+  'rodcutting','bellmanford'
+];
 
 function doCopy(text, btn) {
   var ta = document.createElement('textarea');
