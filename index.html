@@ -35,13 +35,16 @@
 <h1>Algorithm Codes</h1>
 
 <button class="btn copyall" onclick="copyAll(this)">
-  <span>Copy All</span><span class="tag">All 8 topics</span><span class="status">click to copy</span>
+  <span>Copy All</span><span class="tag">All 9 topics</span><span class="status">click to copy</span>
 </button>
 
 <hr>
 
-<button class="btn" onclick="copyOne(this,'knapsack')">
+<button class="btn" onclick="copyOne(this,'knapsack01')">
   <span>0/1 Knapsack</span><span class="tag">DP</span><span class="status">click to copy</span>
+</button>
+<button class="btn" onclick="copyOne(this,'knapsackfrac')">
+  <span>Fractional Knapsack</span><span class="tag">Greedy</span><span class="status">click to copy</span>
 </button>
 <button class="btn" onclick="copyOne(this,'karatsuba')">
   <span>Karatsuba Multiplication</span><span class="tag">Divide &amp; Conquer</span><span class="status">click to copy</span>
@@ -68,51 +71,105 @@
 <script>
 var codes = {};
 
-codes.knapsack = [
-'#include <iostream>',
-'#include <vector>',
-'#include <algorithm>',
-'#include <iomanip>',
-'',
+codes.knapsack01 = [
+'#include<iostream>',
 'using namespace std;',
 '',
-'void knapsack01(int W, const vector<int>& wt, const vector<int>& val) {',
-'    int n = val.size();',
-'    vector<vector<int>> dp(n + 1, vector<int>(W + 1, 0));',
+'int main() {',
+'    int n, w;',
+'',
+'    cout << "Enter the number of items: ";',
+'    cin >> n;',
+'    cout << "Enter the maximum capacity of the knapsack: ";',
+'    cin >> w;',
+'',
+'    int wt[n], val[n];',
+'',
+'    cout << "Enter the weights of the " << n << " items: " << endl;',
+'    for (int i = 0; i < n; i++) {',
+'        cout << "Weight of item " << i + 1 << ": ";',
+'        cin >> wt[i];',
+'    }',
+'',
+'    cout << "Enter the values of the " << n << " items: " << endl;',
+'    for (int i = 0; i < n; i++) {',
+'        cout << "Value of item " << i + 1 << ": ";',
+'        cin >> val[i];',
+'    }',
+'',
+'    int dp[n + 1][w + 1];',
+'    for (int i = 0; i <= n; i++) {',
+'        for (int j = 0; j <= w; j++) {',
+'            if (i == 0 || j == 0)',
+'                dp[i][j] = 0;',
+'        }',
+'    }',
 '',
 '    for (int i = 1; i <= n; i++) {',
-'        for (int w = 1; w <= W; w++) {',
-'            if (wt[i - 1] <= w) {',
-'                dp[i][w] = max(dp[i - 1][w], val[i - 1] + dp[i - 1][w - wt[i - 1]]);',
+'        for (int j = 1; j <= w; j++) {',
+'            if (wt[i - 1] <= j) {',
+'                dp[i][j] = max(val[i - 1] + dp[i - 1][j - wt[i - 1]], dp[i - 1][j]);',
 '            } else {',
-'                dp[i][w] = dp[i - 1][w];',
+'                dp[i][j] = dp[i - 1][j];',
+'            }',
+'        }',
+'        cout << "\\nDP Table after considering item " << i',
+'             << " (Weight: " << wt[i - 1] << ", Value: " << val[i - 1] << "):" << endl;',
+'        for (int x = 0; x <= i; x++) {',
+'            for (int y = 0; y <= w; y++) {',
+'                cout << dp[x][y] << "\\t";',
+'            }',
+'            cout << endl;',
+'        }',
+'    }',
+'',
+'    cout << "\\nMaximum Profit = " << dp[n][w] << endl;',
+'    return 0;',
+'}'
+].join('\n');
+
+codes.knapsackfrac = [
+'#include<iostream>',
+'#include<algorithm>',
+'using namespace std;',
+'',
+'int main() {',
+'    int n, W;',
+'    cin >> n >> W;',
+'',
+'    float wt[n], val[n], ratio[n];',
+'',
+'    for (int i = 0; i < n; i++) cin >> wt[i];',
+'    for (int i = 0; i < n; i++) cin >> val[i];',
+'',
+'    // compute ratio',
+'    for (int i = 0; i < n; i++) {',
+'        ratio[i] = val[i] / wt[i];',
+'    }',
+'',
+'    // sort by ratio descending',
+'    for (int i = 0; i < n; i++) {',
+'        for (int j = i + 1; j < n; j++) {',
+'            if (ratio[i] < ratio[j]) {',
+'                swap(ratio[i], ratio[j]);',
+'                swap(wt[i],    wt[j]);',
+'                swap(val[i],   val[j]);',
 '            }',
 '        }',
 '    }',
 '',
-'    cout << "--- 0/1 Knapsack DP Table ---" << endl;',
-'    cout << "  i\\w |";',
-'    for (int w = 0; w <= W; w++) {',
-'        cout << setw(5) << w;',
-'    }',
-'    cout << endl;',
-'',
-'    for (int i = 0; i <= n; i++) {',
-'        cout << "  i=" << i << " |";',
-'        for (int w = 0; w <= W; w++) {',
-'            cout << setw(5) << dp[i][w];',
+'    float profit = 0;',
+'    for (int i = 0; i < n; i++) {',
+'        if (wt[i] <= W) {',
+'            profit += val[i];',
+'            W -= wt[i];',
+'        } else {',
+'            profit += ratio[i] * W;',
+'            break;',
 '        }',
-'        cout << endl;',
 '    }',
 '',
-'    cout << "\\nFinal Maximum Value: " << dp[n][W] << endl;',
-'}',
-'',
-'int main() {',
-'    vector<int> val = {60, 100, 120};',
-'    vector<int> wt  = {1, 2, 3};',
-'    int W = 5;',
-'    knapsack01(W, wt, val);',
+'    cout << "Max Profit = " << profit << endl;',
 '    return 0;',
 '}'
 ].join('\n');
@@ -423,17 +480,18 @@ codes.subset = [
 ].join('\n');
 
 var labels = {
-  knapsack:   '0/1 Knapsack',
-  karatsuba:  'Karatsuba Multiplication',
-  mcm:        'Matrix Chain Multiplication',
-  lcs:        'Longest Common Subsequence',
-  mss:        'Maximum Subarray Sum',
-  graphcolor: 'Graph Coloring',
-  nqueens:    'N-Queens',
-  subset:     'Subset Sum'
+  knapsack01:   '0/1 Knapsack',
+  knapsackfrac: 'Fractional Knapsack',
+  karatsuba:    'Karatsuba Multiplication',
+  mcm:          'Matrix Chain Multiplication',
+  lcs:          'Longest Common Subsequence',
+  mss:          'Maximum Subarray Sum',
+  graphcolor:   'Graph Coloring',
+  nqueens:      'N-Queens',
+  subset:       'Subset Sum'
 };
 
-var order = ['knapsack','karatsuba','mcm','lcs','mss','graphcolor','nqueens','subset'];
+var order = ['knapsack01','knapsackfrac','karatsuba','mcm','lcs','mss','graphcolor','nqueens','subset'];
 
 function doCopy(text, btn) {
   var ta = document.createElement('textarea');
