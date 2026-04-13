@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Website</title>
+<title>Algo Codes</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #0d0d0d; font-family: monospace; padding: 2rem; }
@@ -83,6 +83,7 @@
 <script>
 var codes = {};
 
+/* ── 1. 0/1 Knapsack ── */
 codes.knapsack01 = [
 '#include<iostream>',
 'using namespace std;',
@@ -140,9 +141,9 @@ codes.knapsack01 = [
 '}'
 ].join('\n');
 
+/* ── 2. Fractional Knapsack ── */
 codes.knapsackfrac = [
 '#include<iostream>',
-'#include<algorithm>',
 'using namespace std;',
 '',
 'int main() {',
@@ -154,38 +155,43 @@ codes.knapsackfrac = [
 '    for (int i = 0; i < n; i++) cin >> wt[i];',
 '    for (int i = 0; i < n; i++) cin >> val[i];',
 '',
-'    // compute ratio',
-'    for (int i = 0; i < n; i++) {',
+'    for (int i = 0; i < n; i++)',
 '        ratio[i] = val[i] / wt[i];',
-'    }',
 '',
-'    // sort by ratio descending',
-'    for (int i = 0; i < n; i++) {',
-'        for (int j = i + 1; j < n; j++) {',
-'            if (ratio[i] < ratio[j]) {',
-'                swap(ratio[i], ratio[j]);',
-'                swap(wt[i],    wt[j]);',
-'                swap(val[i],   val[j]);',
+'    // sort by ratio descending (bubble sort)',
+'    for (int i = 0; i < n - 1; i++) {',
+'        for (int j = 0; j < n - i - 1; j++) {',
+'            if (ratio[j] < ratio[j + 1]) {',
+'                swap(ratio[j], ratio[j + 1]);',
+'                swap(wt[j],    wt[j + 1]);',
+'                swap(val[j],   val[j + 1]);',
 '            }',
 '        }',
 '    }',
 '',
+'    cout << "\\nAfter sorting:\\n";',
+'    for (int i = 0; i < n; i++)',
+'        cout << wt[i] << " " << val[i] << " " << ratio[i] << endl;',
+'',
 '    float profit = 0;',
 '    for (int i = 0; i < n; i++) {',
 '        if (wt[i] <= W) {',
+'            cout << "Take full item " << i << endl;',
 '            profit += val[i];',
 '            W -= wt[i];',
 '        } else {',
+'            cout << "Take " << W << " weight of item " << i << endl;',
 '            profit += ratio[i] * W;',
 '            break;',
 '        }',
 '    }',
 '',
-'    cout << "Max Profit = " << profit << endl;',
+'    cout << "\\nMax Profit = " << profit;',
 '    return 0;',
 '}'
 ].join('\n');
 
+/* ── 3. Karatsuba ── */
 codes.karatsuba = [
 '#include <iostream>',
 '#include <cmath>',
@@ -233,6 +239,7 @@ codes.karatsuba = [
 '}'
 ].join('\n');
 
+/* ── 4. Matrix Chain Multiplication ── */
 codes.mcm = [
 '#include <iostream>',
 '#include <climits>',
@@ -267,6 +274,7 @@ codes.mcm = [
 '}'
 ].join('\n');
 
+/* ── 5. LCS ── */
 codes.lcs = [
 '#include <iostream>',
 '#include <vector>',
@@ -319,6 +327,7 @@ codes.lcs = [
 '}'
 ].join('\n');
 
+/* ── 6. Maximum Subarray Sum ── */
 codes.mss = [
 '#include <iostream>',
 '#include <vector>',
@@ -373,6 +382,7 @@ codes.mss = [
 '}'
 ].join('\n');
 
+/* ── 7. Graph Coloring ── */
 codes.graphcolor = [
 '#include <bits/stdc++.h>',
 'using namespace std;',
@@ -418,6 +428,7 @@ codes.graphcolor = [
 '}'
 ].join('\n');
 
+/* ── 8. N-Queens ── */
 codes.nqueens = [
 '#include <bits/stdc++.h>',
 'using namespace std;',
@@ -454,6 +465,7 @@ codes.nqueens = [
 '}'
 ].join('\n');
 
+/* ── 9. Subset Sum ── */
 codes.subset = [
 '#include <iostream>',
 'using namespace std;',
@@ -491,6 +503,7 @@ codes.subset = [
 '}'
 ].join('\n');
 
+/* ── 10. Ford Fulkerson ── */
 codes.fordfulkerson = [
 '#include <iostream>',
 '#include <vector>',
@@ -556,12 +569,12 @@ codes.fordfulkerson = [
 '',
 'int main() {',
 '    int graph[V][V] = {',
-'        {0, 16, 13,  0,  0, 0},',
-'        {0,  0, 10, 12,  0, 0},',
-'        {0,  4,  0,  0, 14, 0},',
+'        {0, 16, 13,  0,  0,  0},',
+'        {0,  0, 10, 12,  0,  0},',
+'        {0,  4,  0,  0, 14,  0},',
 '        {0,  0,  9,  0,  0, 20},',
-'        {0,  0,  0,  7,  0, 4},',
-'        {0,  0,  0,  0,  0, 0}',
+'        {0,  0,  0,  7,  0,  4},',
+'        {0,  0,  0,  0,  0,  0}',
 '    };',
 '    int maxFlow = fordFulkerson(graph, 0, 5);',
 '    cout << endl;',
@@ -570,6 +583,7 @@ codes.fordfulkerson = [
 '}'
 ].join('\n');
 
+/* ── 11. Floyd Warshall ── */
 codes.floydwarshall = [
 '#include <iostream>',
 '#include <vector>',
@@ -618,6 +632,7 @@ codes.floydwarshall = [
 '}'
 ].join('\n');
 
+/* ── 12. Rod Cutting ── */
 codes.rodcutting = [
 '#include <iostream>',
 '#include <vector>',
@@ -630,7 +645,7 @@ codes.rodcutting = [
 '',
 '    for (int i = 1; i <= n; i++) {',
 '        for (int j = 0; j < i; j++) {',
-'            int cut_length    = j + 1;',
+'            int cut_length     = j + 1;',
 '            int current_profit = price[j] + dp[i - cut_length];',
 '            if (current_profit > dp[i]) {',
 '                dp[i]   = current_profit;',
@@ -657,6 +672,7 @@ codes.rodcutting = [
 '}'
 ].join('\n');
 
+/* ── 13. Bellman Ford ── */
 codes.bellmanford = [
 '#include <iostream>',
 'using namespace std;',
@@ -721,6 +737,13 @@ codes.bellmanford = [
 '}'
 ].join('\n');
 
+/* ── order & labels must match exactly ── */
+var order = [
+  'knapsack01', 'knapsackfrac', 'karatsuba', 'mcm', 'lcs', 'mss',
+  'graphcolor', 'nqueens', 'subset', 'fordfulkerson', 'floydwarshall',
+  'rodcutting', 'bellmanford'
+];
+
 var labels = {
   knapsack01:   '0/1 Knapsack',
   knapsackfrac: 'Fractional Knapsack',
@@ -736,12 +759,6 @@ var labels = {
   rodcutting:   'Rod Cutting',
   bellmanford:  'Bellman Ford'
 };
-
-var order = [
-  'knapsack01','knapsackfrac','karatsuba','mcm','lcs','mss',
-  'graphcolor','nqueens','subset','fordfulkerson','floydwarshall',
-  'rodcutting','bellmanford'
-];
 
 function doCopy(text, btn) {
   var ta = document.createElement('textarea');
