@@ -266,7 +266,6 @@ codes.lcs = [
 '#include <vector>',
 '#include <string>',
 '#include <algorithm>',
-'',
 'using namespace std;',
 '',
 'void printLCS(string s1, string s2) {',
@@ -300,6 +299,15 @@ codes.lcs = [
 '',
 '    cout << "Length of LCS : " << dp[m][n] << endl;',
 '    cout << "The Sequence  : " << result << endl;',
+'',
+'    // Printing only the final DP table at the end',
+'    cout << "\\n--- Final DP Table ---" << endl;',
+'    for (int row = 0; row <= m; row++) {',
+'        for (int col = 0; col <= n; col++) {',
+'            cout << dp[row][col] << " ";',
+'        }',
+'        cout << endl;',
+'    }',
 '}',
 '',
 'int main() {',
@@ -755,7 +763,7 @@ codes.bellmanford = [
 '}'
 ].join('\n');
 
-/* ── order & labels — single source of truth for both buttons and Copy All ── */
+/* ── single source of truth for order and labels ── */
 var order = [
   'knapsack01', 'knapsackfrac', 'karatsuba', 'mcm', 'lcs', 'mss',
   'graphcolor', 'nqueens', 'subset', 'fordfulkerson', 'floydwarshall',
